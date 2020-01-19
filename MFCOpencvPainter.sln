@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCOpencvPainter", "MFCOpencvPainter.vcxproj", "{31435A1F-8975-4066-AB3A-2BFE0BC1DA48}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31435A1F-8975-4066-AB3A-2BFE0BC1DA48}.Debug|x64.ActiveCfg = Debug|x64
+		{31435A1F-8975-4066-AB3A-2BFE0BC1DA48}.Debug|x64.Build.0 = Debug|x64
+		{31435A1F-8975-4066-AB3A-2BFE0BC1DA48}.Debug|x86.ActiveCfg = Debug|Win32
+		{31435A1F-8975-4066-AB3A-2BFE0BC1DA48}.Debug|x86.Build.0 = Debug|Win32
+		{31435A1F-8975-4066-AB3A-2BFE0BC1DA48}.Release|x64.ActiveCfg = Release|x64
+		{31435A1F-8975-4066-AB3A-2BFE0BC1DA48}.Release|x64.Build.0 = Release|x64
+		{31435A1F-8975-4066-AB3A-2BFE0BC1DA48}.Release|x86.ActiveCfg = Release|Win32
+		{31435A1F-8975-4066-AB3A-2BFE0BC1DA48}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BDAA63A1-CC2E-4CAB-9BA8-777DB3C1C337}
+	EndGlobalSection
+EndGlobal
