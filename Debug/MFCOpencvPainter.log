@@ -1,0 +1,6 @@
+﻿  pch.cpp
+  MFCOpencvPainter.cpp
+  MFCOpencvPainterDlg.cpp
+C:\Users\w\Documents\GitHub\MFCOpencvPainter\MFCOpencvPainterDlg.h(7,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'opencv2/opencv.hpp': No such file or directory
+  코드를 생성하고 있습니다...
+C:\Users\w\Documents\GitHub\MFCOpencvPainter\MFCOpencvPainterDlg.h(7,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'opencv2/opencv.hpp': No such file or directory

@@ -4,7 +4,7 @@
     <RESOURCE_FILE>MFCOpencvPainter.rc</RESOURCE_FILE>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerEnvironment>PATH=D:\opencv420\build\x64\vc15\bin;%PATH%</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment>D:\opencv420\build\x64\vc15\bin;</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

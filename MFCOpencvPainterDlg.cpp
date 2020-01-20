@@ -62,6 +62,8 @@ void CMFCOpencvPainterDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MAT_VIEW, m_pic);
 	DDX_Control(pDX, IDC_STATIC_POINT, m_point_coord);
 	DDX_Control(pDX, IDC_LINE_COLOR, m_color1);
+	DDX_Control(pDX, IDC_BTN_LINE, m_btn_line);
+	DDX_Control(pDX, IDC_MFCCOLORBUTTON2, m_color_fill);
 }
 
 BEGIN_MESSAGE_MAP(CMFCOpencvPainterDlg, CDialogEx)
@@ -72,6 +74,17 @@ BEGIN_MESSAGE_MAP(CMFCOpencvPainterDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_IMAGE_OPEN, &CMFCOpencvPainterDlg::OnBnClickedImageOpen)
 	ON_BN_CLICKED(IDC_NEW_PAGE, &CMFCOpencvPainterDlg::OnBnClickedNewPage)
 	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONDOWN()
+	ON_BN_CLICKED(IDC_BTN_LINE, &CMFCOpencvPainterDlg::OnBnClickedBtnLine)
+	ON_BN_CLICKED(IDC_BTN_RECT, &CMFCOpencvPainterDlg::OnBnClickedBtnRect)
+	ON_BN_CLICKED(IDC_BTN_CIRCLE, &CMFCOpencvPainterDlg::OnBnClickedBtnCircle)
+	ON_BN_CLICKED(IDC_BTN_DILATE, &CMFCOpencvPainterDlg::OnBnClickedBtnDilate)
+	ON_BN_CLICKED(IDC_BTN_ERODE, &CMFCOpencvPainterDlg::OnBnClickedBtnErode)
+	ON_BN_CLICKED(IDC_BTN_SOBEL, &CMFCOpencvPainterDlg::OnBnClickedBtnSobel)
+	ON_BN_CLICKED(IDC_BTN_CANNY, &CMFCOpencvPainterDlg::OnBnClickedBtnCanny)
+	ON_BN_CLICKED(IDC_BUTTON2, &CMFCOpencvPainterDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BTN_BLUR, &CMFCOpencvPainterDlg::OnBnClickedBtnBlur)
+	ON_BN_CLICKED(IDC_IMAGE_SAVE, &CMFCOpencvPainterDlg::OnBnClickedImageSave)
 END_MESSAGE_MAP()
 
 
@@ -181,6 +194,7 @@ void CMFCOpencvPainterDlg::OnBnClickedImageOpen()
 		CT2CA pszString(path);
 
 		Mat src = imread(string(pszString), IMREAD_UNCHANGED);
+		m_mat_img = src;
 		DisplayImage(src);
 
 	}
@@ -241,8 +255,11 @@ void CMFCOpencvPainterDlg::DisplayImage(cv::Mat& _targetMat)
 
 void CMFCOpencvPainterDlg::OnBnClickedNewPage()
 {
-	m_mat_img = Mat(600,600,CV_8UC3, Scalar(0,0,0));
-	pen_color = Scalar(255, 255, 255);
+	m_mat_img = Mat(400,400,CV_8UC3, Scalar(0,0,0));
+	m_color1.SetColor(COLORREF(0x00ffffff)); // white color
+	//pen_color = Scalar(255, 255, 255);
+	ResetPos();
+
 	DisplayImage(m_mat_img);
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
@@ -251,36 +268,236 @@ void CMFCOpencvPainterDlg::OnBnClickedNewPage()
 
 void CMFCOpencvPainterDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
-	
-	line(m_mat_img, Point(200, 200), Point(point.x, point.y), pen_color);
-	DisplayImage(m_mat_img);
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	CDialogEx::OnMouseMove(nFlags, point);
+	// 직선 그리기.
+	//line(m_mat_img, Point(200, 200), Point(point.x, point.y), pen_color);
+	//DisplayImage(m_mat_img);
 	print_out(point.x, point.y);
 
 	CRect rect;
 	m_pic.GetClientRect(&rect);
 	m_pic.MoveWindow(0, 0, 400, 400);
 	//print_out(rect.bottom, rect.right);
+
+
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	CDialogEx::OnMouseMove(nFlags, point);
 }
 
 
 int CMFCOpencvPainterDlg::print_out(int x, int y)
 {
 	CString q;
+	
 	q.Format(L"%d %d", x, y);
 	SetDlgItemTextW(IDC_STATIC_POINT, q);
 
-	COLORREF color(m_color1.GetColor());
-	int red, green, blue;
-	red = color & 0x0000ff;
-	green= (color & 0x00ff00) >> 8;
-	blue = (color & 0xff0000) >> 16;
-	pen_color = Scalar(blue, green, red);
-	q.Format(L"%d %d %d", red, green, blue);
-	SetDlgItemTextW(IDC_STATIC_POINT, q);
+	//COLORREF color(m_color1.GetColor());
+	//int red, green, blue;
+	//red = color & 0x0000ff;
+	//green= (color & 0x00ff00) >> 8;
+	//blue = (color & 0xff0000) >> 16;
+	pen_color = convertColor(m_color1.GetColor());
+	//pen_color = Scalar(blue, green, red);
+	
+	//q.Format(L"COLOR : %d %d %d", red, green, blue);
+	//SetDlgItemTextW(IDC_STATIC_POINT, q);
 
 
 	// TODO: 여기에 구현 코드 추가.
 	return 0;
+}
+
+
+void CMFCOpencvPainterDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	if ((point.x > 400) | (point.y > 400))
+	{
+			ResetPos();
+			return;
+	}
+
+
+	if (m_pos_new)
+	{
+		if (m_pos_old) {
+			delete m_pos_old;
+		}
+		m_pos_old = m_pos_new;
+	}
+	m_pos_new = new CPoint(point);
+
+	if (m_pos_old) {
+		if (m_shape_mode.empty()) 
+		{
+			ResetPos();
+			// nothing;
+		}
+		else if (m_shape_mode == "line") 
+		{
+			DrawShapeLine(*m_pos_old, *m_pos_new);
+		}
+		else if (m_shape_mode == "rectangle") 
+		{
+			DrawShapeRect(*m_pos_old, *m_pos_new);
+		}
+		else if (m_shape_mode == "circle") 
+		{
+			DrawShapeCircle(*m_pos_old, *m_pos_new);
+		}
+	}
+
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+
+	CDialogEx::OnLButtonDown(nFlags, point);
+}
+
+
+void CMFCOpencvPainterDlg::DrawShapeLine(CPoint point1, CPoint point2)
+{
+	cv::line(m_mat_img, Point(point1.x, point1.y), Point(point2.x, point2.y), pen_color);
+	ResetPos();
+	DisplayImage(m_mat_img);
+}
+void CMFCOpencvPainterDlg::DrawShapeRect(CPoint point1, CPoint point2)
+{
+	bg_color = convertColor(m_color1.GetColor());
+	cv::rectangle(m_mat_img, Point(point1.x, point1.y), Point(point2.x, point2.y), convertColor(m_color_fill.GetColor()), -1);
+	cv::rectangle(m_mat_img, Point(point1.x, point1.y), Point(point2.x, point2.y), pen_color, 2);
+	ResetPos();
+	DisplayImage(m_mat_img);
+}
+void CMFCOpencvPainterDlg::DrawShapeCircle(CPoint point1, CPoint point2)
+{
+	Point p1(point1.x, point1.y);
+	Point p2(point2.x, point2.y);
+
+	int dist = cv::norm(p1 - p2);
+
+	cv::circle(m_mat_img, Point(point1.x, point1.y), dist, convertColor(m_color_fill.GetColor()), -1);
+	cv::circle(m_mat_img, Point(point1.x, point1.y), dist, pen_color, 2);
+	ResetPos();
+	DisplayImage(m_mat_img);
+}
+
+
+void CMFCOpencvPainterDlg::ResetPos()
+{
+	m_pos_old = nullptr;
+	if (m_pos_new)
+	{
+		delete m_pos_new;
+		m_pos_new = nullptr;
+	}
+}
+
+
+void CMFCOpencvPainterDlg::OnBnClickedBtnLine()
+{
+	m_shape_mode = "line";
+}
+
+
+void CMFCOpencvPainterDlg::OnBnClickedBtnRect()
+{
+	m_shape_mode = "rectangle";
+}
+
+
+void CMFCOpencvPainterDlg::OnBnClickedBtnCircle()
+{
+	m_shape_mode = "circle";
+}
+
+Scalar CMFCOpencvPainterDlg::convertColor(COLORREF color) {
+	int red, green, blue;
+	red = color & 0x0000ff;
+	green = (color & 0x00ff00) >> 8;
+	blue = (color & 0xff0000) >> 16;
+	return Scalar(blue, green, red);
+}
+
+
+
+void CMFCOpencvPainterDlg::OnBnClickedBtnDilate()
+{
+	cv::dilate(m_mat_img, m_mat_img, Mat(), Point(-1, -1), 3);
+	DisplayImage(m_mat_img);
+}
+
+
+
+void CMFCOpencvPainterDlg::OnBnClickedBtnErode()
+{
+	cv::erode(m_mat_img, m_mat_img, Mat(), Point(-1, -1), 3);
+	DisplayImage(m_mat_img);
+}
+
+
+void CMFCOpencvPainterDlg::OnBnClickedBtnSobel()
+{
+	if (m_mat_img.channels() != 3)
+	{
+		return;
+	}
+
+	Mat gray_img;
+	cvtColor(m_mat_img, gray_img, COLOR_BGR2GRAY);
+
+	Mat grad, grad_x, grad_y;
+	Mat abs_grad_x, abs_grad_y;
+
+	cv::Sobel(gray_img, grad_x, CV_16S, 1, 0);
+	cv::Sobel(gray_img, grad_y, CV_16S, 0, 1);
+	// converting back to CV_8U
+	convertScaleAbs(grad_x, abs_grad_x);
+	convertScaleAbs(grad_y, abs_grad_y);
+	addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0, grad);
+	m_mat_img = grad;
+
+	DisplayImage(grad);
+}
+
+
+void CMFCOpencvPainterDlg::OnBnClickedBtnCanny()
+{
+	if (m_mat_img.channels() == 3) {
+		Mat gray_img;
+		cvtColor(m_mat_img, gray_img, COLOR_BGR2GRAY);
+		cv::Canny(gray_img, m_mat_img, 50, 200);
+		DisplayImage(m_mat_img);
+	}
+	else
+	{
+		return;
+	}
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CMFCOpencvPainterDlg::OnBnClickedButton2()
+{
+	cv::GaussianBlur(m_mat_img, m_mat_img, Size(3,3), 2, 2);
+	DisplayImage(m_mat_img);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CMFCOpencvPainterDlg::OnBnClickedBtnBlur()
+{
+	cv::medianBlur(m_mat_img, m_mat_img, 3);
+	DisplayImage(m_mat_img);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CMFCOpencvPainterDlg::OnBnClickedImageSave()
+{
+	CString szFilter = L"Image (*.BMP, *.GIF, *.JPG, *.PNG) | *.BMP;*.GIF;*.JPG;*.PNG;*.bmp;*.gif;*.jpg;*.png | All Files(*.*)|*.*||";
+	CFileDialog dlg(FALSE, L"jpg", L"output", OFN_READONLY, szFilter, AfxGetMainWnd());
+	if (dlg.DoModal() == IDOK)
+	{
+		CString path = dlg.GetPathName();
+		CT2CA pszString(path);
+		cv::imwrite(string(pszString), m_mat_img);
+	}
 }

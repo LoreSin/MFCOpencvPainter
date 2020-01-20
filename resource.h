@@ -13,6 +13,17 @@
 #define IDC_STATIC_POINT                1005
 #define IDC_MFCCOLORBUTTON1             1007
 #define IDC_LINE_COLOR                  1007
+#define IDC_BTN_LINE                    1008
+#define IDC_BTN_RECT                    1009
+#define IDC_BTN_CIRCLE                  1010
+#define IDC_MFCCOLORBUTTON2             1011
+#define IDC_IMAGE_SAVE                  1012
+#define IDC_BTN_DILATE                  1016
+#define IDC_BTN_ERODE                   1017
+#define IDC_BTN_SOBEL                   1018
+#define IDC_BTN_CANNY                   1020
+#define IDC_BTN_BLUR                    1023
+#define IDC_BUTTON2                     1024
 
 // Next default values for new objects
 // 
@@ -20,7 +31,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1008
+#define _APS_NEXT_CONTROL_VALUE         1025
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

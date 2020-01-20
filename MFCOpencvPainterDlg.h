@@ -38,14 +38,39 @@ protected:
 public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedImageOpen();
+	
 	CStatic m_pic;
-	Mat m_mat_img;
-	void DisplayImage(cv::Mat& _targetMat);
+	CStatic m_point_coord;
+	CButton m_btn_line;
+
+	CPoint *m_pos_old;
+	CPoint *m_pos_new;
+	CMFCColorButton m_color1;
+	CMFCColorButton m_color_fill;
+	void ResetPos();
+	int print_out(int x, int y);
 	afx_msg void OnBnClickedNewPage();
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	int print_out(int x, int y);
-	CStatic m_point_coord;
-	CMFCColorButton m_color1;
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+
+	Mat m_mat_img;
 	cv::Scalar pen_color;
+	cv::Scalar bg_color;
+	string m_shape_mode;
+	void DisplayImage(cv::Mat& _targetMat);
+	void DrawShapeLine(CPoint point1, CPoint point2);
+	void DrawShapeRect(CPoint point1, CPoint point2);
+	void DrawShapeCircle(CPoint point1, CPoint point2);
+	afx_msg void OnBnClickedBtnLine();
+	afx_msg void OnBnClickedBtnRect();
+	afx_msg void OnBnClickedBtnCircle();
+	Scalar convertColor(COLORREF color);
+	afx_msg void OnBnClickedBtnDilate();
+	afx_msg void OnBnClickedBtnErode();
+	afx_msg void OnBnClickedBtnSobel();
+	afx_msg void OnBnClickedBtnCanny();
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedBtnBlur();
+	afx_msg void OnBnClickedImageSave();
 };
 
